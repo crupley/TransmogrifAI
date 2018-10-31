@@ -88,7 +88,8 @@ case class SanityCheckerSummary
   dropped: Seq[String],
   featuresStatistics: SummaryStatistics,
   names: Seq[String],
-  categoricalStats: Array[CategoricalGroupStats]
+  categoricalStats: Array[CategoricalGroupStats],
+  correlationMatrix: String
 ) extends MetadataLike {
 
   private[op] def this(
@@ -98,7 +99,8 @@ case class SanityCheckerSummary
     colStats: MultivariateStatisticalSummary,
     names: Seq[String],
     correlationType: CorrelationType,
-    sample: Double
+    sample: Double,
+    correlationMatrix: String
   ) {
     this(
       correlationsWLabel = new Correlations(
@@ -109,7 +111,8 @@ case class SanityCheckerSummary
       dropped = dropped,
       featuresStatistics = new SummaryStatistics(colStats, sample),
       names = names,
-      categoricalStats = catStats
+      categoricalStats = catStats,
+      correlationMatrix: String
     )
   }
 
@@ -125,6 +128,7 @@ case class SanityCheckerSummary
     summaryMeta.putMetadata(SanityCheckerNames.FeaturesStatistics, featuresStatistics.toMetadata())
     summaryMeta.putStringArray(SanityCheckerNames.Names, names.toArray)
     summaryMeta.putMetadataArray(SanityCheckerNames.CategoricalStats, categoricalStats.map(_.toMetadata()))
+    summaryMeta.putString("correlationMatrix", correlationMatrix)
     summaryMeta.build()
   }
 
@@ -351,7 +355,8 @@ case object SanityCheckerSummary {
         featuresStatistics = statisticsFromMetadata(wrapped.get[Metadata](SanityCheckerNames.FeaturesStatistics)),
         names = wrapped.getArray[String](SanityCheckerNames.Names).toSeq,
         categoricalStats = wrapped.getArray[Metadata](SanityCheckerNames.CategoricalStats)
-          .map(categoricalGroupStatsFromMetadata)
+          .map(categoricalGroupStatsFromMetadata),
+        correlationMatrix = wrapped.getAny("correlationMatrix").map(_.toString).getOrElse("")
       )
     } match {
       case Success(summary) => summary

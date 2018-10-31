@@ -638,7 +638,7 @@ class SanityChecker(uid: String = UID[SanityChecker])
     }
     else Statistics.corr(vectorRowsForCorr, getCorrelationType.sparkName).rowIter
       .map(_.apply(numCorrIndices - 1)).toArray
-
+    val corrMatrix = Statistics.corr(vectorRowsForCorr, getCorrelationType.sparkName)
     // Only calculate this if the label is categorical, so ignore if user has flagged label as not categorical
     val categoricalStats =
       if (isDefined(categoricalLabel) && !$(categoricalLabel)) {
@@ -675,7 +675,8 @@ class SanityChecker(uid: String = UID[SanityChecker])
       colStats = colStats,
       names = featureNames :+ in1.name,
       correlationType = CorrelationType.withNameInsensitive(corrType),
-      sample = sampleFraction
+      sample = sampleFraction,
+      correlationMatrix = corrMatrix.toArray.mkString(",")
     )
     setMetadata(outputMeta.toMetadata.withSummaryMetadata(summary.toMetadata()))
 
