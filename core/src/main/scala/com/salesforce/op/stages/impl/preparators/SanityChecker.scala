@@ -640,8 +640,8 @@ class SanityChecker(uid: String = UID[SanityChecker])
       .map(_.apply(numCorrIndices - 1)).toArray
     val corrMatrix = Statistics.corr(vectorRowsForCorr, getCorrelationType.sparkName)
     val allNames = featureNames :+ in1.name
+    val keepThresh = 0.80
     val (corrNames: Seq[String], topCorrs: Seq[Double]) = {
-      val keepThresh = 0.80
       val nameMatrix: Seq[String] = for {
         n1 <- allNames;
         n2 <- allNames
@@ -701,6 +701,7 @@ class SanityChecker(uid: String = UID[SanityChecker])
       names = featureNames :+ in1.name,
       correlationType = CorrelationType.withNameInsensitive(corrType),
       sample = sampleFraction,
+      corrThresh = keepThresh,
       corrNames = corrNames,
       corrValues = topCorrs
     )

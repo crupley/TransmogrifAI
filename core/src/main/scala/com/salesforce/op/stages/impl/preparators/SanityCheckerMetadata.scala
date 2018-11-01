@@ -89,6 +89,7 @@ case class SanityCheckerSummary
   featuresStatistics: SummaryStatistics,
   names: Seq[String],
   categoricalStats: Array[CategoricalGroupStats],
+  corrThresh: Double,
   corrNames: Seq[String],
   corrValues: Seq[Double]
 ) extends MetadataLike {
@@ -101,6 +102,7 @@ case class SanityCheckerSummary
     names: Seq[String],
     correlationType: CorrelationType,
     sample: Double,
+    corrThresh: Double,
     corrNames: Seq[String],
     corrValues: Seq[Double]
   ) {
@@ -114,6 +116,7 @@ case class SanityCheckerSummary
       featuresStatistics = new SummaryStatistics(colStats, sample),
       names = names,
       categoricalStats = catStats,
+      corrThresh = corrThresh,
       corrNames = corrNames,
       corrValues = corrValues
     )
@@ -131,6 +134,7 @@ case class SanityCheckerSummary
     summaryMeta.putMetadata(SanityCheckerNames.FeaturesStatistics, featuresStatistics.toMetadata())
     summaryMeta.putStringArray(SanityCheckerNames.Names, names.toArray)
     summaryMeta.putMetadataArray(SanityCheckerNames.CategoricalStats, categoricalStats.map(_.toMetadata()))
+    summaryMeta.putDouble("correlationThresh", corrThresh)
     summaryMeta.putStringArray("correlationNames", corrNames.toArray)
     summaryMeta.putDoubleArray("correlationValues", corrValues.toArray)
     summaryMeta.build()
@@ -360,6 +364,7 @@ case object SanityCheckerSummary {
         names = wrapped.getArray[String](SanityCheckerNames.Names).toSeq,
         categoricalStats = wrapped.getArray[Metadata](SanityCheckerNames.CategoricalStats)
           .map(categoricalGroupStatsFromMetadata),
+        corrThresh = wrapped.get[Double]("correlationThresh"),
         corrNames = wrapped.getArray[String]("correlationNames"),
         corrValues = wrapped.getArray[Double]("correlationValues")
       )

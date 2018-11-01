@@ -73,7 +73,8 @@ case class ModelInsights
   features: Seq[FeatureInsights],
   selectedModelInfo: Option[ModelSelectorSummary],
   trainingParams: OpParams,
-  stageInfo: Map[String, Any]
+  stageInfo: Map[String, Any],
+  checkerSummary: Option[SanityCheckerSummary]
 ) {
 
   /**
@@ -478,7 +479,8 @@ case object ModelInsights {
         blacklistedFeatures, blacklistedMapKeys, rawFeatureDistributions),
       selectedModelInfo = getModelInfo(model),
       trainingParams = trainingParams,
-      stageInfo = getStageInfo(stages)
+      stageInfo = getStageInfo(stages),
+      checkerSummary = checkerSummary
     )
   }
 
