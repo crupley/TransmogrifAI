@@ -92,6 +92,7 @@ configure(allProjs) {
         aardpfarkVersion = '0.1.0-SNAPSHOT'
         xgboostVersion = '0.81'
         akkaSlf4jVersion = '2.3.11'
+        mdocVersion = '1.2.7'
 
         mainClassName = 'com.salesforce.Main'
     }
@@ -128,6 +129,7 @@ configure(allProjs) {
         testCompile ("com.holdenkarau:spark-testing-base_$scalaVersion:$sparkTestingBaseVersion") { transitive = false }
         testCompile "junit:junit:$junitVersion"
         testRuntime "org.pegdown:pegdown:$pegdownVersion"
+        compile "org.scalameta:mdoc_2.12:$mdocVersion" // mdoc does not support scala 2.11
     }
 
     configurations.all {
